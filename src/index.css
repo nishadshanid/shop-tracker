@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+body {
+  background: var(--color-slate-100);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide number spinners; he types amounts on the keypad */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
