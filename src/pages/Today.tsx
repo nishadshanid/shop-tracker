@@ -244,8 +244,8 @@ export default function Today({ onError, onOpenCredits }: { onError: (e: unknown
       {/* Credit totals */}
       {parties.length > 0 && (
         <button type="button" onClick={onOpenCredits} className="grid w-full grid-cols-2 gap-3 text-left">
-          <MiniStat label="Customers owe you" value={owedToUs} tone="text-emerald-700" />
-          <MiniStat label="You owe suppliers" value={weOwe} tone="text-rose-600" />
+          <MiniStat label="Customers owe you" value={owedToUs} />
+          <MiniStat label="You owe suppliers" value={weOwe} />
         </button>
       )}
 
@@ -268,38 +268,36 @@ function ProfitCard({ summary }: { summary: DaySummary }) {
   const [open, setOpen] = useState(false)
   const loss = summary.profit < 0
   return (
-    <section
-      className={`overflow-hidden rounded-3xl text-white shadow-md ${
-        loss ? 'bg-gradient-to-br from-rose-600 to-rose-700' : 'bg-gradient-to-br from-emerald-600 to-teal-700'
-      }`}
-    >
+    <section className="rounded-3xl bg-white shadow-sm">
       <div className="p-5">
-        <p className="text-sm font-medium text-white/80">{loss ? 'Loss' : 'Profit'}</p>
-        <p className="mt-1 text-4xl font-bold tracking-tight">
-          <span className="mr-1 text-lg font-semibold text-white/70">AED</span>
+        <p className={`text-sm font-medium ${loss ? 'text-amber-700' : 'text-slate-500'}`}>
+          {loss ? 'Loss for the day' : 'Profit for the day'}
+        </p>
+        <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900">
+          <span className="mr-1 text-lg font-semibold text-slate-400">AED</span>
           {money(Math.abs(summary.profit))}
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-white/15 p-3">
-            <p className="text-xs text-white/80">Money in</p>
-            <p className="text-lg font-semibold">{money(summary.totalSale + summary.otherIncome)}</p>
+        <div className="mt-4 grid grid-cols-2 divide-x divide-slate-100 rounded-2xl bg-slate-50 py-3">
+          <div className="px-4">
+            <p className="text-xs text-slate-500">Money in</p>
+            <p className="text-lg font-semibold text-slate-800">{money(summary.totalSale + summary.otherIncome)}</p>
           </div>
-          <div className="rounded-2xl bg-white/15 p-3">
-            <p className="text-xs text-white/80">Expenses</p>
-            <p className="text-lg font-semibold">{money(summary.totalExpenses)}</p>
+          <div className="px-4">
+            <p className="text-xs text-slate-500">Expenses</p>
+            <p className="text-lg font-semibold text-slate-800">{money(summary.totalExpenses)}</p>
           </div>
         </div>
       </div>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-center gap-1 bg-black/10 py-2 text-sm font-medium text-white/90"
+        className="flex w-full items-center justify-center gap-1 border-t border-slate-100 py-3 text-sm font-medium text-slate-500"
       >
         {open ? 'Hide' : 'Show'} breakdown
         <ChevronDown size={16} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="space-y-1 bg-white p-4 text-sm text-slate-700">
+        <div className="space-y-1 border-t border-slate-100 p-4 text-sm text-slate-700">
           <Line label="Cash sale" value={summary.cashSale} />
           <Line label="Card sale" value={summary.cardSale} />
           {summary.otherIncome > 0 && <Line label="Other income" value={summary.otherIncome} />}
@@ -469,11 +467,11 @@ function MoneyField({
   )
 }
 
-function MiniStat({ label, value, tone }: { label: string; value: number; tone: string }) {
+function MiniStat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl bg-white p-3 shadow-sm">
       <p className="text-xs text-slate-500">{label}</p>
-      <p className={`text-lg font-bold ${tone}`}>{money(value)}</p>
+      <p className="text-lg font-bold text-slate-800">{money(value)}</p>
     </div>
   )
 }
