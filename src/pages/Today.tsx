@@ -160,7 +160,7 @@ export default function Today({ onError, onOpenCredits }: { onError: (e: unknown
         </IconButton>
       </div>
 
-      <ProfitCard summary={summary} />
+      <ProfitCard summary={summary} isToday={isToday} />
 
       {/* Sale */}
       <Section title="Sale" right={<span className="font-semibold text-slate-900">{money(summary.totalSale)}</span>}>
@@ -173,9 +173,11 @@ export default function Today({ onError, onOpenCredits }: { onError: (e: unknown
             Save sale
           </Button>
         ) : (
-          <p className="mt-3 flex items-center justify-center gap-1 text-sm text-slate-400">
-            {loading ? 'Loading…' : savedSale ? <><Check size={16} /> Saved</> : 'Enter the day’s sale above'}
-          </p>
+          (loading || savedSale) && (
+            <p className="mt-3 flex items-center justify-center gap-1 text-sm text-slate-400">
+              {loading ? 'Loading…' : <><Check size={16} /> Saved</>}
+            </p>
+          )
         )}
       </Section>
 
@@ -264,19 +266,27 @@ export default function Today({ onError, onOpenCredits }: { onError: (e: unknown
   )
 }
 
-function ProfitCard({ summary }: { summary: DaySummary }) {
+function ProfitCard({ summary, isToday }: { summary: DaySummary; isToday: boolean }) {
   const [open, setOpen] = useState(false)
-  const loss = summary.profit < 0
+  // Before any sale is entered, fixed costs alone would show as a loss, so ask for the sale instead
+  const noSaleYet = summary.totalSale + summary.otherIncome === 0
+  const loss = !noSaleYet && summary.profit < 0
   return (
     <section className="rounded-3xl bg-white shadow-sm">
       <div className="p-5">
         <p className={`text-sm font-medium ${loss ? 'text-amber-700' : 'text-slate-500'}`}>
           {loss ? 'Loss for the day' : 'Profit for the day'}
         </p>
-        <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900">
-          <span className="mr-1 text-lg font-semibold text-slate-400">AED</span>
-          {money(Math.abs(summary.profit))}
-        </p>
+        {noSaleYet ? (
+          <p className="mt-2 text-xl font-semibold text-slate-400">
+            Enter {isToday ? 'today’s' : 'the day’s'} sale to see profit
+          </p>
+        ) : (
+          <p className="mt-1 text-4xl font-bold tracking-tight text-slate-900">
+            <span className="mr-1 text-lg font-semibold text-slate-400">AED</span>
+            {money(Math.abs(summary.profit))}
+          </p>
+        )}
         <div className="mt-4 grid grid-cols-2 divide-x divide-slate-100 rounded-2xl bg-slate-50 py-3">
           <div className="px-4">
             <p className="text-xs text-slate-500">Money in</p>
